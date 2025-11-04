@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: Resume Parser API
+  version: 1.0.0
+  description: >
+    API for uploading resumes and extracting structured data using AI models.
+    Supports multiple file types and returns structured JSON data.
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+paths:
+  /upload:
+    post:
+      summary: Upload a resume for parsing
+      description: Accepts a resume file and returns extracted structured data.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The resume file to upload
+      responses:
+        '200':
+          description: Successful extraction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParseResult'
+        '400':
+          description: Invalid file type or parsing error
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    ParseResult:
+      type: object
+      properties:
+        resume_id:
+          type: string
+          format: uuid
+        extracted_data:
+          type: object
+          additionalProperties: true
